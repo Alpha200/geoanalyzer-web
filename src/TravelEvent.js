@@ -17,26 +17,21 @@ const linePaint = {
   'line-width': 12
 };
 
-const coordinates = [
-  [51.4644563, 7.1322513],
-  [51.4732754, 7.1038306],
-  [51.4623416, 7.0602934],
-  [51.3296056, 6.8410707]
-];
-
-const converted = coordinates.map(
-  coordinate => [coordinate[1], coordinate[0]]
-);
-
-console.log(converted);
-
-const bounds = coordinates.reduce(function(bounds, coord) {
-  return bounds.extend(coord);
-}, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
-
-const convertedBounds = [[bounds.getNorthWest().lat, bounds.getNorthWest().lng], [bounds.getSouthEast().lat, bounds.getSouthEast().lng]];
+const convertCoordinates = function(coordinates) {
+  return coordinates.map(
+    coordinate => [coordinate[1], coordinate[0]]
+  );
+};
 
 function TravelEvent(props) {
+  const coordinates = props.coordinates;
+
+  const bounds = coordinates.reduce(function(bounds, coord) {
+    return bounds.extend(coord);
+  }, new mapboxgl.LngLatBounds(coordinates[0], coordinates[0]));
+
+  const convertedBounds = [[bounds.getNorthWest().lat, bounds.getNorthWest().lng], [bounds.getSouthEast().lat, bounds.getSouthEast().lng]];
+
   return (
     <div className="TravelEvent">
       <h1>Travel</h1>
@@ -46,7 +41,7 @@ function TravelEvent(props) {
         fitBoundsOptions={{ padding: 20 }}
       >
         <Layer type="line" layout={lineLayout} paint={linePaint}>
-          <Feature coordinates={converted} />
+          <Feature coordinates={convertCoordinates(coordinates)} />
         </Layer>
       </Map>
     </div>
