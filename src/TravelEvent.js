@@ -2,9 +2,10 @@ import React from 'react';
 import './TravelEvent.css';
 import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
 import mapboxgl from 'mapbox-gl';
+import mapConf from './MapConf'
 
 const Map = ReactMapboxGl({
-  accessToken: 'pk.eyJ1IjoiZHNhbHBoYTIwMCIsImEiOiJjamJ6Z3RhenQzbTA2MnFsb3Zqbjg4bmNnIn0.plrNR1gR12RJqFJzSiZxzw'
+  accessToken: mapConf.accessToken
 });
 
 const lineLayout = {
@@ -14,7 +15,7 @@ const lineLayout = {
 
 const linePaint = {
   'line-color': '#4790E5',
-  'line-width': 12
+  'line-width': 9
 };
 
 const convertCoordinates = function(coordinates) {
@@ -39,6 +40,7 @@ function TravelEvent(props) {
         style="mapbox://styles/mapbox/streets-v11"
         fitBounds={convertedBounds}
         fitBoundsOptions={{ padding: 20 }}
+        interactive={false}
       >
         <Layer type="line" layout={lineLayout} paint={linePaint}>
           <Feature coordinates={convertCoordinates(coordinates)} />
