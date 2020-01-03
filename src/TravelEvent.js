@@ -1,12 +1,9 @@
 import React from 'react';
 import './TravelEvent.css';
-import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
+import { Layer, Feature } from 'react-mapbox-gl';
 import mapboxgl from 'mapbox-gl';
-import mapConf from './MapConf'
-
-const Map = ReactMapboxGl({
-  accessToken: mapConf.accessToken
-});
+import Map from './Map';
+import { Card } from 'semantic-ui-react';
 
 const lineLayout = {
   'line-cap': 'round',
@@ -34,10 +31,9 @@ function TravelEvent(props) {
   const convertedBounds = [[bounds.getNorthWest().lat, bounds.getNorthWest().lng], [bounds.getSouthEast().lat, bounds.getSouthEast().lng]];
 
   return (
-    <div className="TravelEvent">
-      <h1>Travel</h1>
-      <Map
-        style="mapbox://styles/mapbox/streets-v11"
+    <Card fluid className="TravelEvent">
+      {/* eslint-disable-next-line react/style-prop-object */}
+      <Map style="mapbox://styles/mapbox/streets-v11"
         fitBounds={convertedBounds}
         fitBoundsOptions={{ padding: 20 }}
         interactive={false}
@@ -46,7 +42,11 @@ function TravelEvent(props) {
           <Feature coordinates={convertCoordinates(coordinates)} />
         </Layer>
       </Map>
-    </div>
+      <Card.Content>
+        <Card.Header>Travel</Card.Header>
+        <Card.Meta>Distance: {Math.round(props.distance / 100.0) / 10.0} km</Card.Meta>
+      </Card.Content>
+    </Card>
   );
 }
 

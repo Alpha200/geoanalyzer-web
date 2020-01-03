@@ -1,28 +1,24 @@
 import React from 'react';
 import './GeofenceEvent.css';
-import ReactMapboxGl, { Layer, Feature } from 'react-mapbox-gl';
-import mapConf from './MapConf'
+import { Layer, Feature } from 'react-mapbox-gl';
+import Map from './Map';
+import { Card } from 'semantic-ui-react';
 
-const Map = ReactMapboxGl({
-  accessToken: mapConf.accessToken
-});
-
-function GeofenceEvent(props) {
+function GeofenceEvent (props) {
   const coordinate = [props.geofenceCenter[1], props.geofenceCenter[0]];
 
   return (
-    <div className="TravelEvent">
-      <h1>Geofence</h1>
-      <Map
-        style="mapbox://styles/mapbox/streets-v11"
-        interactive={false}
-        center={coordinate}
-      >
-        <Layer type="symbol" id="marker" layout={{ 'icon-image': 'marker-15' }}>
-          <Feature coordinates={coordinate} />
+    <Card fluid className="TravelEvent">
+      {/* eslint-disable-next-line react/style-prop-object */}
+      <Map style="mapbox://styles/mapbox/streets-v11" center={coordinate}>
+        <Layer type="symbol" id="marker" layout={{'icon-image': 'marker-15'}}>
+          <Feature coordinates={coordinate}/>
         </Layer>
       </Map>
-    </div>
+      <Card.Content>
+        <Card.Header>Geofence {props.geofenceName}</Card.Header>
+      </Card.Content>
+    </Card>
   );
 }
 
