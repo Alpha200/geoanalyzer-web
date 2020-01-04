@@ -51,9 +51,7 @@ class App extends Component {
       content = this.state.data.map(geoEvent => {
         switch (geoEvent.event_type) {
           case 'geofence':
-            const center = geoEvent.geopoints[0];
-            return <GeofenceEvent key={`geofence-${geoEvent.from}-${geoEvent.to}`} geofenceName={geoEvent.geofence}
-                                  geofenceCenter={[center.latitude, center.longitude]}/>;
+            return <GeofenceEvent key={`geofence-${geoEvent.from}-${geoEvent.to}`} event={geoEvent} />;
           case 'travel':
             const mappedPoints = geoEvent.geopoints.map(point => [point.latitude, point.longitude]);
             return <TravelEvent key={`travel-${geoEvent.from}-${geoEvent.to}`} coordinates={mappedPoints}
