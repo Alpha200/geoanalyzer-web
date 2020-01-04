@@ -5,15 +5,15 @@ import TravelEvent from './TravelEvent';
 import GeofenceEvent from './GeofenceEvent';
 import ClusterEvent from './ClusterEvent';
 import {
-  Button,
-  ButtonGroup,
   Container,
+  Form,
   Grid,
   GridColumn,
   Header,
   Loader,
   Menu,
 } from 'semantic-ui-react';
+import { DateInput } from 'semantic-ui-calendar-react';
 
 class App extends Component {
   constructor (props) {
@@ -43,6 +43,11 @@ class App extends Component {
 
   componentDidMount () {
     this.loadData();
+  }
+
+  handleDateChange (event, {name, value}) {
+   this.setState({ date: moment(value, 'DD-MM-YYYY'), data: null });
+   this.loadData();
   }
 
   render () {
@@ -80,13 +85,14 @@ class App extends Component {
           <Grid stackable>
             <GridColumn width={6}>
               <Header as='h2' content={this.state.date.format('D. MMMM YYYY')} textAlign='center'/>
-              <ButtonGroup widths={'2'}>
-                <Button
-                  onClick={this.prevDay.bind(this)}>Previous day</Button>
-                <Button
-                  onClick={this.nextDay.bind(this)}
-                  disabled={moment().isBefore(moment(this.state.date).add(1, 'day'))}>Next day</Button>
-              </ButtonGroup>
+              <Form>
+                <DateInput
+                  inline
+                  name='date'
+                  value={this.state.date.format("DD-MM-YYYY")}
+                  onChange={this.handleDateChange.bind(this)}
+                />
+              </Form>
             </GridColumn>
             <GridColumn width={10}>
               {content}
