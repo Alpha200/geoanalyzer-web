@@ -4,6 +4,7 @@ import { Layer, Feature } from 'react-mapbox-gl';
 import Map from './Map';
 import { Card } from 'semantic-ui-react';
 import mapboxgl from 'mapbox-gl';
+import moment from 'moment';
 
 const geofencePaint = {
   'fill-color': '#4790E5',
@@ -47,7 +48,8 @@ function GeofenceEvent (props) {
     <Card fluid className="GeofenceEvent">
       {cardMap}
       <Card.Content>
-        <Card.Header>Geofence {props.geofenceName}</Card.Header>
+        <Card.Header>Geofence {props.event.geofence.name}</Card.Header>
+        <Card.Meta>Time: {moment(props.event.from).format("HH:mm")} - {moment(props.event.to).format("HH:mm")}</Card.Meta>
       </Card.Content>
     </Card>
   );

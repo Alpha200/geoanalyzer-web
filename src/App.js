@@ -3,6 +3,7 @@ import moment from 'moment';
 import './App.css';
 import TravelEvent from './TravelEvent';
 import GeofenceEvent from './GeofenceEvent';
+import ClusterEvent from './ClusterEvent';
 import {
   Button,
   ButtonGroup,
@@ -53,9 +54,9 @@ class App extends Component {
           case 'geofence':
             return <GeofenceEvent key={`geofence-${geoEvent.from}-${geoEvent.to}`} event={geoEvent} />;
           case 'travel':
-            const mappedPoints = geoEvent.geopoints.map(point => [point.latitude, point.longitude]);
-            return <TravelEvent key={`travel-${geoEvent.from}-${geoEvent.to}`} coordinates={mappedPoints}
-                                distance={geoEvent.distance}/>;
+            return <TravelEvent key={`travel-${geoEvent.from}-${geoEvent.to}`} event={geoEvent} />;
+          case 'cluster':
+            return <ClusterEvent key={`travel-${geoEvent.from}-${geoEvent.to}`} event={geoEvent} />;
           default:
             return <div key={`unknown-${geoEvent.from}-${geoEvent.to}`} className={'unknown-event-type'}>Unknown event
               type!</div>;
