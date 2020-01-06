@@ -14,6 +14,7 @@ import {
   Menu,
 } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
+import Login from './Login';
 
 class App extends Component {
   constructor (props) {
@@ -21,28 +22,22 @@ class App extends Component {
 
     this.state = {
       date: moment().startOf('day'),
-      data: null
+      data: null,
+      login: null
     };
   }
 
   loadData () {
-    fetch(`http://localhost:5000/events/${this.state.date.toISOString()}`)
+    const headers = new Headers();
+    console.log(this.state);
+    headers.set('Authorization', 'Basic ' + btoa(this.state.login.username + ":" + this.state.login.password));
+
+    fetch(
+      `api/device/1/events/${this.state.date.toISOString()}`,
+      { method: 'GET', headers }
+      )
       .then(response => response.json())
       .then(data => this.setState({data}));
-  }
-
-  nextDay () {
-    this.setState({date: this.state.date.add(1, 'day'), data: null});
-    this.loadData();
-  }
-
-  prevDay () {
-    this.setState({date: this.state.date.subtract(1, 'day'), data: null});
-    this.loadData();
-  }
-
-  componentDidMount () {
-    this.loadData();
   }
 
   handleDateChange (event, {name, value}) {
@@ -50,7 +45,21 @@ class App extends Component {
    this.loadData();
   }
 
+  loginFinished (username, password) {
+    this.setState({ login: { username, password }});
+  }
+
+  componentDidUpdate (prevProps, prevState, snapshot) {
+    if(prevState.login == null && this.state.login != null) {
+      this.loadData();
+    }
+  }
+
   render () {
+    if(this.state.login === null) {
+      return <Login onLoginFinished={this.loginFinished.bind(this)} />
+    }
+
     let content;
 
     if (this.state.data !== null) {
