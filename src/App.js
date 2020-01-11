@@ -11,7 +11,7 @@ import {
   GridColumn,
   Header,
   Loader,
-  Menu,
+  Menu, Message,
 } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 import Login from './Login';
@@ -23,13 +23,13 @@ class App extends Component {
     this.state = {
       date: moment().startOf('day'),
       data: null,
-      login: null
+      login: null,
+      error: null
     };
   }
 
   loadData () {
     const headers = new Headers();
-    console.log(this.state);
     headers.set('Authorization', 'Basic ' + btoa(this.state.login.username + ":" + this.state.login.password));
 
     fetch(
@@ -37,7 +37,12 @@ class App extends Component {
       { method: 'GET', headers }
       )
       .then(response => response.json())
-      .then(data => this.setState({data}));
+      .then(data => {
+        this.setState({data, error: null});
+      })
+      .catch(err => {
+        this.setState({data: null, error: 'Failed to load data' });
+      })
   }
 
   handleDateChange (event, {name, value}) {
@@ -66,16 +71,18 @@ class App extends Component {
       content = this.state.data.map(geoEvent => {
         switch (geoEvent.event_type) {
           case 'geofence':
-            return <GeofenceEvent key={`geofence-${geoEvent.from}-${geoEvent.to}`} event={geoEvent} />;
+            return <GeofenceEvent key={`geofence-${geoEvent.from}-${geoEvent.to}`} event={geoEvent}/>;
           case 'travel':
-            return <TravelEvent key={`travel-${geoEvent.from}-${geoEvent.to}`} event={geoEvent} />;
+            return <TravelEvent key={`travel-${geoEvent.from}-${geoEvent.to}`} event={geoEvent}/>;
           case 'cluster':
-            return <ClusterEvent key={`travel-${geoEvent.from}-${geoEvent.to}`} event={geoEvent} />;
+            return <ClusterEvent key={`travel-${geoEvent.from}-${geoEvent.to}`} event={geoEvent}/>;
           default:
             return <div key={`unknown-${geoEvent.from}-${geoEvent.to}`} className={'unknown-event-type'}>Unknown event
               type!</div>;
         }
       });
+    } else if (this.state.error !== null) {
+      content = <Message>{this.state.error}</Message>
     } else {
       content = <div/>;
     }
@@ -90,7 +97,7 @@ class App extends Component {
           >Day</Menu.Item>
         </Menu>
         <Container>
-          <Loader active={this.state.data == null}/>
+          <Loader active={this.state.data == null && this.state.error === null} />
           <Grid stackable>
             <GridColumn width={6}>
               <Header as='h2' content={this.state.date.format('D. MMMM YYYY')} textAlign='center'/>
