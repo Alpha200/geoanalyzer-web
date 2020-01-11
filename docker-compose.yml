@@ -1,0 +1,16 @@
+version: '2.0'
+services:
+  geoanalyzer-web:
+    image: alpha200/geoanalyzer-web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.geoanalyzer-web.rule=Host(`geoanalyzer.example.com`)"
+    restart: unless-stopped
+  geoanalyzer:
+    image: alpha200/geoanalyzer
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.geoanalyzer.rule=Host(`geoanalyzer.example.com`) && PathPrefix(`/api`)"
+    volumes:
+      - "/path/to/your/config.yaml:/usr/src/app/config.yaml:ro"
+    restart: unless-stopped
