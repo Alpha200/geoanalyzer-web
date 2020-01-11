@@ -36,6 +36,15 @@ class App extends Component {
       `api/device/1/events/${this.state.date.toISOString()}`,
       { method: 'GET', headers }
       )
+      .then(response => {
+        if (response.status === 401) {
+          this.setState({login: null})
+        } else if (!response.ok) {
+          throw Error(response.statusText)
+        } else {
+          return response
+        }
+      })
       .then(response => response.json())
       .then(data => {
         this.setState({data, error: null});
