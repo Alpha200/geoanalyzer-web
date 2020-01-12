@@ -11,7 +11,8 @@ import {
   GridColumn,
   Header,
   Loader,
-  Menu, Message,
+  Menu,
+  Message,
 } from 'semantic-ui-react';
 import { DateInput } from 'semantic-ui-calendar-react';
 import Login from './Login';
@@ -32,8 +33,10 @@ class App extends Component {
     const headers = new Headers();
     headers.set('Authorization', 'Basic ' + btoa(this.state.login.username + ":" + this.state.login.password));
 
+    const dateToFetch = moment(this.state.date);
+
     fetch(
-      `api/device/1/events/${this.state.date.toISOString()}`,
+      `api/device/1/events/${dateToFetch.toISOString()}`,
       { method: 'GET', headers }
       )
       .then(response => {
@@ -47,16 +50,19 @@ class App extends Component {
       })
       .then(response => response.json())
       .then(data => {
-        this.setState({data, error: null});
+        if (dateToFetch.isSame(this.state.date)) {
+          this.setState({data, error: null});
+        }
       })
       .catch(err => {
-        this.setState({data: null, error: 'Failed to load data' });
+        if (dateToFetch.isSame(this.state.date)) {
+          this.setState({data: null, error: 'Failed to load data' });
+        }
       })
   }
 
   handleDateChange (event, {name, value}) {
    this.setState({ date: moment(value, 'DD-MM-YYYY'), data: null });
-   this.loadData();
   }
 
   loginFinished (username, password) {
@@ -66,6 +72,8 @@ class App extends Component {
   componentDidUpdate (prevProps, prevState, snapshot) {
     if(prevState.login == null && this.state.login != null) {
       this.loadData();
+    } else if (this.state.login != null && this.state.data == null) {
+      this.loadData()
     }
   }
 
@@ -77,7 +85,7 @@ class App extends Component {
     let content;
 
     if (this.state.data !== null) {
-      content = this.state.data.map(geoEvent => {
+      content = this.state.data.events.map(geoEvent => {
         switch (geoEvent.event_type) {
           case 'geofence':
             return <GeofenceEvent key={`geofence-${geoEvent.from}-${geoEvent.to}`} event={geoEvent}/>;
