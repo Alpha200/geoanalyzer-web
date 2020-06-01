@@ -1,13 +1,13 @@
-FROM node:13.2.0-alpine as build
+FROM node:14.3.0-alpine as build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
-COPY package.json /app/package.json
-RUN npm install
+COPY package.json yarn.lock ./
+RUN yarn install
 COPY . /app
-RUN npm run build
+RUN yarn run build
 
 # production environment
-FROM nginx:1.16.0-alpine
+FROM nginx:stable-alpine
 COPY --from=build /app/build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
