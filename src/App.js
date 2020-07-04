@@ -36,7 +36,7 @@ class App extends Component {
     const dateToFetch = moment(this.state.date);
 
     fetch(
-      `api/device/1/events/${dateToFetch.toISOString()}`,
+      `${process.env.REACT_APP_API_PREFIX}/device/1/events/${dateToFetch.toISOString()}`,
       { method: 'GET', headers }
       )
       .then(response => {
