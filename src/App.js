@@ -72,7 +72,11 @@ class App extends Component {
   componentDidUpdate (prevProps, prevState, snapshot) {
     if(prevState.login == null && this.state.login != null) {
       this.loadData();
-    } else if (this.state.login != null && this.state.data == null) {
+    } else if (
+      this.state.login != null &&
+      this.state.data == null &&
+      (this.state.error == null || prevState.date !== this.state.date)
+    ) {
       this.loadData()
     }
   }
